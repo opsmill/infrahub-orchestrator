@@ -1,0 +1,27 @@
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED 1
+
+ENV PATH="${PATH}:/root/.local/bin"
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install --no-install-recommends -y curl git pkg-config build-essential ca-certificates && \
+    curl -sSL https://install.python-poetry.org | python3 - && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip --no-cache-dir install --no-compile --upgrade pip wheel
+
+RUN poetry config virtualenvs.create false
+
+WORKDIR /opt/dagster/app
+
+COPY pyproject.toml poetry.lock /opt/dagster/app/
+
+RUN poetry install --no-interaction --no-ansi --no-root --no-directory
+
+COPY . .
+
+EXPOSE 4000
+
+CMD ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "4000", "-f", "/opt/dagster/app/infrahub_orchestrator/__init__.py"]
