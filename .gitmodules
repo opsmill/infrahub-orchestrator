@@ -1,0 +1,3 @@
+[submodule "infrahub"]
+	path = infrahub
+	url = git@github.com:opsmill/infrahub.git

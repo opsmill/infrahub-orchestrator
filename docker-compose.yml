@@ -24,6 +24,8 @@ services:
       DAGSTER_POSTGRES_PASSWORD: "postgres_password"
       DAGSTER_POSTGRES_DB: "postgres_db"
       DAGSTER_CURRENT_IMAGE: "orchestrator_image"
+    volumes:
+      - ./infrahub/sync:/opt/dagster/app/infrahub/sync
     networks:
       - dagster_network
 
