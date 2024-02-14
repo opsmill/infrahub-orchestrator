@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: "postgres_password"
       POSTGRES_DB: "postgres_db"
     networks:
-      - dagster_network
+      - infrahub_default
 
   orchestrator:
     build:
@@ -24,10 +24,14 @@ services:
       DAGSTER_POSTGRES_PASSWORD: "postgres_password"
       DAGSTER_POSTGRES_DB: "postgres_db"
       DAGSTER_CURRENT_IMAGE: "orchestrator_image"
+      NETBOX_TOKEN: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      INFRAHUB_TOKEN: "06438eb2-8019-4776-878c-0941b1f1d1ec"
+      INFRAHUB_SDK_API_TOKEN: "06438eb2-8019-4776-878c-0941b1f1d1ec"
     volumes:
       - ./infrahub/sync:/opt/dagster/app/infrahub/sync
+      - /tmp:/tmp
     networks:
-      - dagster_network
+      - infrahub_default
 
   dagster_webserver:
     build:
@@ -54,7 +58,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
     networks:
-      - dagster_network
+      - infrahub_default
     depends_on:
       - dagster_postgresql
       - orchestrator
@@ -76,12 +80,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
     networks:
-      - dagster_network
+      - infrahub_default
     depends_on:
       - dagster_postgresql
       - orchestrator
 
 networks:
-  dagster_network:
+  infrahub_default:
     driver: bridge
-    name: dagster_network
+    name: infrahub_default
