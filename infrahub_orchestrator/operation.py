@@ -43,7 +43,7 @@ def load_sync_source_op(context, id):
     if not potenda:
         logger.error("Potenda resource is None. Unable to proceed with loading the source.")
         raise Failure("Potenda resource is None. Check the resource configuration.")
-    logger.info(f"Loading the Source {potenda.source.name} with {id} as store_id")
+    logger.info(f"Loading the Source {potenda.source.name} with {id} as Store ID")
     potenda.source.store._store_id = id
     potenda.source_load()
     return None
@@ -60,7 +60,7 @@ def load_sync_destination_op(context, id):
     if not potenda:
         context.log.error("Potenda resource is None. Unable to proceed with loading the destination.")
         raise Failure("Potenda resource is None. Check the resource configuration.")
-    logger.info(f"Loading the Destination {potenda.destination.name} with {id} as store_id")
+    logger.info(f"Loading the Destination {potenda.destination.name} with {id} as Store ID")
     potenda.destination.store._store_id = id
     potenda.destination_load()
     return None
@@ -68,10 +68,9 @@ def load_sync_destination_op(context, id):
 
 @op(
     ins={
-        "source_id": In(str),
         "load_sync_source": In(Nothing),
-        "destination_id": In(str),
         "load_sync_destination": In(Nothing),
+        "materialize_file": In(Nothing),
     },
     out={"result": Out(is_required=False)},
     required_resource_keys={"potenda_resource"},
@@ -109,7 +108,7 @@ def diff_op(context, source_id, destination_id):
     ins={
         "load_sync_source": In(Nothing),
         "load_sync_destination": In(Nothing),
-        "completion_signal": In(Nothing),
+        "materialize_file": In(Nothing),
     },
     out={"result": Out(is_required=False)},
     required_resource_keys={"potenda_resource"},
