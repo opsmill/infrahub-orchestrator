@@ -20,11 +20,9 @@ from infrahub_orchestrator.resource import potenda_resource, sync_instance_resou
     )
 def diff_job():
     source_id, destination_id = initialize_adapters_op()
-    rendered_files = render_adapter_files_op()
     diff_op(
         load_sync_source=load_sync_source_op(source_id),
         load_sync_destination=load_sync_destination_op(destination_id),
-        materialize_file=load_and_materialize_file_op(rendered_files=rendered_files),
     )
 
 @job(
@@ -35,11 +33,9 @@ def diff_job():
     )
 def sync_job():
     source_id, destination_id = initialize_adapters_op()
-    rendered_files = render_adapter_files_op()
     sync_op(
         load_sync_source=load_sync_source_op(source_id),
         load_sync_destination=load_sync_destination_op(destination_id),
-        materialize_file=load_and_materialize_file_op(rendered_files=rendered_files),
     )
 
 @job(

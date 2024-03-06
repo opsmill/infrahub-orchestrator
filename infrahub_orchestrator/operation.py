@@ -35,57 +35,117 @@ def initialize_adapters_op():
 @op(
     required_resource_keys={"potenda_resource"},
     ins={"id": In(str)},
-    out={"result": Out(Nothing)},
+    out={"result": Out(str)},
 )
 def load_sync_source_op(context, id):
     logger = get_dagster_logger()
-    potenda = context.resources.potenda_resource
-    if not potenda:
+
+    if not context.resources.potenda_resource:
         logger.error("Potenda resource is None. Unable to proceed with loading the source.")
         raise Failure("Potenda resource is None. Check the resource configuration.")
-    logger.info(f"Loading the Source {potenda.source.name} with {id} as Store ID")
-    potenda.source.store._store_id = id
-    potenda.source_load()
-    return None
+
+    # logger.info(f"Loading the Source {context.resources.potenda_resource.source.name}")
+    # start_time = timer()
+
+    # logger.debug(f"Source Store ID {context.resources.potenda_resource.source.store._store_id}")
+    # # context.resources.potenda_resource.source.store._store_id = id
+    # context.resources.potenda_resource.source_load()
+    # end_time = timer()
+
+    # yield AssetMaterialization(
+    #         asset_key=f"load-{context.resources.potenda_resource.source.name}",
+    #         metadata={
+    #             "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
+    #             "Store ID": MetadataValue.text(context.resources.potenda_resource.source.store.__str__()),
+    #             "Store Item Count": MetadataValue.int(context.resources.potenda_resource.source.store.count()),
+    #         },
+    #     )
+    yield Output(f"{context.resources.potenda_resource.source.store._store_id}", "result")
+
 
 
 @op(
     required_resource_keys={"potenda_resource"},
     ins={"id": In(str)},
-    out={"result": Out(Nothing)},
+    out={"result": Out(str)},
 )
 def load_sync_destination_op(context, id):
     logger = get_dagster_logger()
-    potenda = context.resources.potenda_resource
-    if not potenda:
-        context.log.error("Potenda resource is None. Unable to proceed with loading the destination.")
+
+    if not context.resources.potenda_resource:
+        logger.error("Potenda resource is None. Unable to proceed with loading the destination.")
         raise Failure("Potenda resource is None. Check the resource configuration.")
-    logger.info(f"Loading the Destination {potenda.destination.name} with {id} as Store ID")
-    potenda.destination.store._store_id = id
-    potenda.destination_load()
-    return None
+
+    # logger.info(f"Loading the Destination {context.resources.potenda_resource.destination.name}")
+    # start_time = timer()
+
+    # logger.debug(f"Destination Store ID {context.resources.potenda_resource.destination.store._store_id}")
+    # # context.resources.potenda_resource.destination_load.store._store_id = id
+    # context.resources.potenda_resource.destination_load()
+    # end_time = timer()
+
+    # yield AssetMaterialization(
+    #         asset_key=f"load-{context.resources.potenda_resource.destination.name}",
+    #         metadata={
+    #             "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
+    #             "Store ID": MetadataValue.text(context.resources.potenda_resource.destination.store.__str__()),
+    #             "Store Item Count": MetadataValue.int(context.resources.potenda_resource.destination.store.count()),
+    #         },
+    #     )
+    yield Output(f"{context.resources.potenda_resource.destination.store._store_id}", "result")
 
 
 @op(
     ins={
-        "load_sync_source": In(Nothing),
-        "load_sync_destination": In(Nothing),
-        "materialize_file": In(Nothing),
+        "load_sync_source": In(str),
+        "load_sync_destination": In(str),
     },
     out={"result": Out(is_required=False)},
     required_resource_keys={"potenda_resource"},
 )
-def diff_op(context, source_id, destination_id):
+def diff_op(context, load_sync_source, load_sync_destination):
     logger = get_dagster_logger()
 
-    potenda = context.resources.potenda_resource
-    if not potenda:
-        context.log.error("Potenda resource is None. Unable to proceed with diff.")
+    if not context.resources.potenda_resource:
+        logger.error("Potenda resource is None. Unable to proceed with diff.")
         raise Failure("Potenda resource is None. Check the resource configuration.")
-    logger.info(f"Starting Diff from {potenda.source.name} to {potenda.destination.name}")
-    potenda_name = f"{potenda.source.name}-{potenda.destination.name}"
+    logger.info(f"Starting Diff from {context.resources.potenda_resource.source.name} to {context.resources.potenda_resource.destination.name}")
+
+    # Load Source
+    logger.info(f"Loading the Source {context.resources.potenda_resource.source.name}")
     start_time = timer()
-    mydiff = potenda.diff()
+    logger.debug(f"Source Store ID {context.resources.potenda_resource.source.store._store_id}")
+    context.resources.potenda_resource.source_load()
+    end_time = timer()
+
+    yield AssetMaterialization(
+            asset_key=f"load-{context.resources.potenda_resource.source.name}",
+            metadata={
+                "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
+                "Store ID": MetadataValue.text(context.resources.potenda_resource.source.store.__str__()),
+                "Store Item Count": MetadataValue.int(context.resources.potenda_resource.source.store.count()),
+            },
+        )
+    # Load Destination
+    logger.info(f"Loading the Destination {context.resources.potenda_resource.destination.name}")
+    start_time = timer()
+    logger.debug(f"Destination Store ID {context.resources.potenda_resource.destination.store._store_id}")
+    context.resources.potenda_resource.destination_load()
+    end_time = timer()
+
+    yield AssetMaterialization(
+            asset_key=f"load-{context.resources.potenda_resource.destination.name}",
+            metadata={
+                "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
+                "Store ID": MetadataValue.text(context.resources.potenda_resource.destination.store.__str__()),
+                "Store Item Count": MetadataValue.int(context.resources.potenda_resource.destination.store.count()),
+            },
+        )
+
+    # Diff
+    potenda_name = f"{context.resources.potenda_resource.source.name}-{context.resources.potenda_resource.destination.name}"
+    start_time = timer()
+    mydiff = context.resources.potenda_resource.diff()
     end_time = timer()
     diff_full = mydiff.str()
     context.log_event(
@@ -93,12 +153,12 @@ def diff_op(context, source_id, destination_id):
             asset_key=f"diff-{potenda_name}",
             description="Diff between source and destination Adapters",
             metadata={
-                "diff_exec_time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
+                "Diff Exec Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
                 "Full Diff": MetadataValue.text(diff_full),
             },
         )
     )
-    logger.info(f"Ending Diff from {potenda.source.name} to {potenda.destination.name}")
+    logger.info(f"Ending Diff from {context.resources.potenda_resource.source.name} to {context.resources.potenda_resource.destination.name}")
     yield Output(f"{end_time - start_time}", "result")
 
 @op(
@@ -106,49 +166,82 @@ def diff_op(context, source_id, destination_id):
         "diff": Field(bool, default_value=False, is_required=False),
     },
     ins={
-        "load_sync_source": In(Nothing),
-        "load_sync_destination": In(Nothing),
-        "materialize_file": In(Nothing),
+        "load_sync_source": In(str),
+        "load_sync_destination": In(str),
     },
     out={"result": Out(is_required=False)},
     required_resource_keys={"potenda_resource"},
 )
-def sync_op(context):
+def sync_op(context, load_sync_source, load_sync_destination):
     logger = get_dagster_logger()
 
-    potenda = context.resources.potenda_resource
-    if not potenda:
-        context.log.error("Potenda resource is None. Unable to proceed with sync.")
+    if not context.resources.potenda_resource:
+        logger.error("Potenda resource is None. Unable to proceed with sync.")
         raise Failure("Potenda resource is None. Check the resource configuration.")
     diff = context.op_config.get("diff", False)
-    logger.info(f"Starting Sync from {potenda.source.name} to {potenda.destination.name}")
-    potenda_name = f"{potenda.source.name}-{potenda.destination.name}"
+    # FIXME
+    # Store ID doesn't seem to be maintain across Operations
+    # Doing both load() into the sync_op for now
+
+    # Load Source
+    logger.info(f"Loading the Source {context.resources.potenda_resource.source.name}")
     start_time = timer()
-    mydiff = potenda.diff()
+    logger.debug(f"Source Store ID {context.resources.potenda_resource.source.store._store_id}")
+    context.resources.potenda_resource.source_load()
     end_time = timer()
-    diff_full = mydiff.str()
-    if not mydiff.has_diffs():
-        logger.info(f"No Diff found between {potenda.source.name} and {potenda.destination.name}")
-    else:
-        if diff:
-            diff_full = mydiff.str()
-        else:
-            diff_full = None
-        yield AssetMaterialization(
-            asset_key=f"diff-{potenda_name}",
+
+    yield AssetMaterialization(
+            asset_key=f"load-{context.resources.potenda_resource.source.name}",
             metadata={
-                "diff_exec_time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
-                "Full Diff": MetadataValue.text(diff_full),
+                "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
+                "Store ID": MetadataValue.text(context.resources.potenda_resource.source.store.__str__()),
+                "Store Item Count": MetadataValue.int(context.resources.potenda_resource.source.store.count()),
             },
         )
+    # Load Destination
+    logger.info(f"Loading the Destination {context.resources.potenda_resource.destination.name}")
+    start_time = timer()
+    logger.debug(f"Destination Store ID {context.resources.potenda_resource.destination.store._store_id}")
+    context.resources.potenda_resource.destination_load()
+    end_time = timer()
+
+    yield AssetMaterialization(
+            asset_key=f"load-{context.resources.potenda_resource.destination.name}",
+            metadata={
+                "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
+                "Store ID": MetadataValue.text(context.resources.potenda_resource.destination.store.__str__()),
+                "Store Item Count": MetadataValue.int(context.resources.potenda_resource.destination.store.count()),
+            },
+        )
+
+    # Diff
+    potenda_name = f"{context.resources.potenda_resource.source.name}-{context.resources.potenda_resource.destination.name}"
+    start_time = timer()
+    mydiff = context.resources.potenda_resource.diff()
+    end_time = timer()
+    diff_full = mydiff.str()
+
+    if diff:
+        diff_full = mydiff.str()
+    else:
+        diff_full = None
+    yield AssetMaterialization(
+        asset_key=f"diff-{potenda_name}",
+        metadata={
+            "Diff Exec Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
+            "Full Diff": MetadataValue.text(diff_full),
+        },
+    )
+    # Sync
+    if mydiff.has_diffs():
         start_time = timer()
-        mydiff = potenda.sync(diff=mydiff)
+        mydiff = context.resources.potenda_resource.sync(diff=mydiff)
         diff_summary = mydiff.summary()
         end_time = timer()
         yield AssetMaterialization(
             asset_key="sync",
             metadata={
-                "sync_exec_time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
+                "Sync Exec Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
                 "Nbr of objects Created": MetadataValue.int(diff_summary["create"]),
                 "Nbr of objects Updated": MetadataValue.int(diff_summary["update"]),
                 "Nbr of objects Deleted": MetadataValue.int(diff_summary["delete"]),
@@ -156,7 +249,7 @@ def sync_op(context):
                 "Related asset": MetadataValue.asset(AssetKey(f"diff-{potenda_name}")),
             },
         )
-        logger.info(f"Ending Sync from {potenda.source.name} to {potenda.destination.name}")
+        logger.info(f"Ending Sync from {context.resources.potenda_resource.source.name} to {context.resources.potenda_resource.destination.name}")
         yield Output(f"{end_time - start_time}", "result")
 
 @op(
