@@ -1,6 +1,0 @@
----
-load_from:
-  - grpc_server:
-      host: orchestrator
-      port: 4000
-      location_name: "orchestrator"

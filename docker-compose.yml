@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: "postgres_password"
       POSTGRES_DB: "postgres_db"
     networks:
-      - infrahub_default
+      - infrahub-demo-dc-fabric-develop_default
 
   orchestrator:
     build:
@@ -31,7 +31,7 @@ services:
     volumes:
       - ./examples-sync-config/:/tmp/sync-config/
     networks:
-      - infrahub_default
+      - infrahub-demo-dc-fabric-develop_default
 
   dagster_webserver:
     build:
@@ -58,7 +58,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
     networks:
-      - infrahub_default
+      - infrahub-demo-dc-fabric-develop_default
     depends_on:
       - dagster_postgresql
       - orchestrator
@@ -80,12 +80,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
     networks:
-      - infrahub_default
+      - infrahub-demo-dc-fabric-develop_default
     depends_on:
       - dagster_postgresql
       - orchestrator
 
 networks:
-  infrahub_default:
+  infrahub-demo-dc-fabric-develop_default:
     driver: bridge
-    name: infrahub_default
+    name: infrahub-demo-dc-fabric-develop_default

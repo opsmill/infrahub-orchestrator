@@ -14,16 +14,18 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 
 [tool.poetry.dependencies]
 python = "^3.8, < 3.12"
-infrahub-sync = "^0.2.2"
+infrahub-sync = "^0.3.0"
 pynetbox = "^7.0.1"
 pynautobot = "^2.0.2"
 dagster = "^1.6.3"
 diffsync = {version = "<2.0.0", extras = ["redis"]}
 dagster-postgres = "^0.22.3"
+dagster-webserver = "^1.6.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
@@ -32,7 +34,7 @@ pytest-cov = "^4.0.0"
 pytest-httpx = "*"
 yamllint = "*"
 pylint = "*"
-ruff = "^0.1.5"
+ruff = "^0.3.3"
 pytest-xdist = "^3.3.1"
 
 [tool.dagster]
