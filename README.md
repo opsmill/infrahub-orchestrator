@@ -2,6 +2,8 @@
 
 The Infrahub Orchestrator leverages Dagster to orchestrate synchronization and diff operations between data sources such as Netbox and Nautobot, utilizing the Infrahub Sync framework. It defines a structured approach to managing and executing data synchronization tasks, ensuring data consistency across different platforms.
 
+![infrahub-orchestrator drawing](.images/infrahub-orchestrator.excalidraw.svg)
+
 ## Project Structure
 
 ```
