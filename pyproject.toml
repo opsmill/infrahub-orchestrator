@@ -18,7 +18,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8, < 3.12"
+python = ">=3.8, < 3.13"
 infrahub-sync = "^0.3.0"
 pynetbox = "^7.0.1"
 pynautobot = "^2.0.2"
