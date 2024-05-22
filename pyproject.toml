@@ -18,12 +18,11 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8, < 3.13"
-infrahub-sync = "^0.3.0"
-pynetbox = "^7.0.1"
-pynautobot = "^2.0.2"
+python = ">=3.9, < 3.13"
+infrahub-sync = "^0.4.1"
+pynetbox = "^7.3.3"
+pynautobot = "^2.2.0"
 dagster = "^1.6.3"
-diffsync = {version = "<2.0.0", extras = ["redis"]}
 dagster-postgres = "^0.22.3"
 dagster-webserver = "^1.6.3"
 
@@ -34,7 +33,7 @@ pytest-cov = "^4.0.0"
 pytest-httpx = "*"
 yamllint = "*"
 pylint = "*"
-ruff = "^0.3.3"
+ruff = "^0.4.3"
 pytest-xdist = "^3.3.1"
 
 [tool.dagster]

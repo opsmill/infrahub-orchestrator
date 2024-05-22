@@ -9,8 +9,6 @@ services:
       POSTGRES_USER: "postgres_user"
       POSTGRES_PASSWORD: "postgres_password"
       POSTGRES_DB: "postgres_db"
-    networks:
-      - infrahub-demo-dc-fabric-develop_default
 
   orchestrator:
     build:
@@ -30,8 +28,6 @@ services:
       INFRAHUB_SDK_API_TOKEN: "06438eb2-8019-4776-878c-0941b1f1d1ec"
     volumes:
       - ./examples-sync-config/:/tmp/sync-config/
-    networks:
-      - infrahub-demo-dc-fabric-develop_default
 
   dagster_webserver:
     build:
@@ -57,8 +53,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
-    networks:
-      - infrahub-demo-dc-fabric-develop_default
     depends_on:
       - dagster_postgresql
       - orchestrator
@@ -79,13 +73,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
-    networks:
-      - infrahub-demo-dc-fabric-develop_default
     depends_on:
       - dagster_postgresql
       - orchestrator
-
-networks:
-  infrahub-demo-dc-fabric-develop_default:
-    driver: bridge
-    name: infrahub-demo-dc-fabric-develop_default
