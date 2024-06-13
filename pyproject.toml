@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "infrahub-orchestrator"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["OpsMill <contact@opsmill.com>"]
 readme = "README.md"
@@ -19,9 +19,10 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.9, < 3.13"
-infrahub-sync = "^0.4.1"
+infrahub-sync = "^0.4.2"
 pynetbox = "^7.3.3"
 pynautobot = "^2.2.0"
+ipfabric = "^6.8.2"
 dagster = "^1.6.3"
 dagster-postgres = "^0.22.3"
 dagster-webserver = "^1.6.3"
@@ -33,7 +34,7 @@ pytest-cov = "^4.0.0"
 pytest-httpx = "*"
 yamllint = "*"
 pylint = "*"
-ruff = "^0.4.3"
+ruff = "^0.4.6"
 pytest-xdist = "^3.3.1"
 
 [tool.dagster]
