@@ -47,33 +47,33 @@ Synchronizes data between sources with an optional diff-checking feature. It can
 
 ```yaml
 ops:
- sync_op:
-  config:
-   diff: True
+  sync_op:
+    config:
+      diff: True
 
 resources:
   sync_instance_resource:
-   config:
-   config_file: /tmp/from-netbox/config.yml
+    config:
+      config_file: /tmp/from-netbox/config.yml
 
 potenda_resource:
   config:
-   branch: main
-   show_progress: True
+    branch: main
+    show_progress: True
 ```
 
 ### Diff Job Configuration
 
 ```yaml
 resources:
- sync_instance_resource:
-  config:
-   config_file: /tmp/from-nautobot-v1/config.yml
+  sync_instance_resource:
+    config:
+      config_file: /tmp/from-nautobot-v1/config.yml
 
- potenda_resource:
+potenda_resource:
   config:
-   branch: main
-   show_progress: True
+    branch: main
+    show_progress: True
 ```
 
 ## Scheduling
