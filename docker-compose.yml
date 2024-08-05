@@ -1,5 +1,4 @@
 ---
-version: "3.7"
 x-orchestrator-config:
   POSTGRES_USER: ${POSTGRES_USER:-postgres_user}
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_pass}
