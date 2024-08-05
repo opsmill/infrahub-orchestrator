@@ -1,18 +1,20 @@
 ---
-x-orchestrator-config:
+x-orchestrator-config: &orchestrator-config
   POSTGRES_USER: ${POSTGRES_USER:-postgres_user}
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_pass}
   POSTGRES_DB: ${POSTGRES_DB:-postgres_db}
-  INFRAHUB_TOKEN: ${INFRAHUB_TOKEN:-"06438eb2-8019-4776-878c-0941b1f1d1ec"}
+
+x-sot-config: &sot-config
+  INFRAHUB_TOKEN: ${INFRAHUB_TOKEN:-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+  NETBOX_TOKEN: ${NETBOX_TOKEN:-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+  NAUTOBOT_TOKEN: ${NAUTOBOT_TOKEN:-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
 
 services:
   dagster_postgresql:
     image: postgres:11
     container_name: dagster_postgresql
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      <<: *orchestrator-config
 
   orchestrator:
     build:
@@ -22,14 +24,12 @@ services:
     image: orchestrator_image
     restart: always
     environment:
-      DAGSTER_POSTGRES_USER: ${POSTGRES_USER}
-      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      DAGSTER_POSTGRES_DB: ${POSTGRES_DB}
+      <<: [*orchestrator-config, *sot-config]
+      DAGSTER_POSTGRES_USER: ${POSTGRES_USER:-postgres_user}
+      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_pass}
+      DAGSTER_POSTGRES_DB: ${POSTGRES_DB:-postgres_db}
       DAGSTER_CURRENT_IMAGE: "orchestrator_image"
-      NETBOX_TOKEN: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-      NAUTOBOT_TOKEN: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-      INFRAHUB_TOKEN: ${INFRAHUB_TOKEN}
-      INFRAHUB_SDK_API_TOKEN: ${INFRAHUB_TOKEN}
+      INFRAHUB_SDK_API_TOKEN: ${INFRAHUB_TOKEN:-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
     volumes:
       - ./examples-sync-config/:/tmp/sync-config/
 
@@ -51,9 +51,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DAGSTER_POSTGRES_USER: ${POSTGRES_USER}
-      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      DAGSTER_POSTGRES_DB: ${POSTGRES_DB}
+      <<: *orchestrator-config
+      DAGSTER_POSTGRES_USER: ${POSTGRES_USER:-postgres_user}
+      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_pass}
+      DAGSTER_POSTGRES_DB: ${POSTGRES_DB:-postgres_db}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
@@ -71,9 +72,10 @@ services:
     container_name: dagster_daemon
     restart: on-failure
     environment:
-      DAGSTER_POSTGRES_USER: ${POSTGRES_USER}
-      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      DAGSTER_POSTGRES_DB: ${POSTGRES_DB}
+      <<: *orchestrator-config
+      DAGSTER_POSTGRES_USER: ${POSTGRES_USER:-postgres_user}
+      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_pass}
+      DAGSTER_POSTGRES_DB: ${POSTGRES_DB:-postgres_db}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
