@@ -1,8 +1,8 @@
 ---
 x-orchestrator-config: &orchestrator-config
-  POSTGRES_USER: ${POSTGRES_USER:-postgres_user}
-  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_pass}
-  POSTGRES_DB: ${POSTGRES_DB:-postgres_db}
+  DAGSTER_POSTGRES_USER: ${DAGSTER_POSTGRES_USER:-postgres_user}
+  DAGSTER_POSTGRES_PASSWORD: ${DAGSTER_POSTGRES_PASSWORD:-postgres_pass}
+  DAGSTER_POSTGRES_DB: ${DAGSTER_POSTGRES_DB:-postgres_db}
 
 x-sot-config: &sot-config
   INFRAHUB_TOKEN: ${INFRAHUB_TOKEN:-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
@@ -15,6 +15,9 @@ services:
     container_name: dagster_postgresql
     environment:
       <<: *orchestrator-config
+      POSTGRES_USER: ${DAGSTER_POSTGRES_USER:-postgres_user}
+      POSTGRES_PASSWORD: ${DAGSTER_POSTGRES_PASSWORD:-postgres_pass}
+      POSTGRES_DB: ${DAGSTER_POSTGRES_DB:-postgres_db}
 
   orchestrator:
     build:
@@ -25,9 +28,6 @@ services:
     restart: always
     environment:
       <<: [*orchestrator-config, *sot-config]
-      DAGSTER_POSTGRES_USER: ${POSTGRES_USER:-postgres_user}
-      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_pass}
-      DAGSTER_POSTGRES_DB: ${POSTGRES_DB:-postgres_db}
       DAGSTER_CURRENT_IMAGE: "orchestrator_image"
       INFRAHUB_SDK_API_TOKEN: ${INFRAHUB_TOKEN:-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
     volumes:
@@ -52,9 +52,6 @@ services:
       - "3000:3000"
     environment:
       <<: *orchestrator-config
-      DAGSTER_POSTGRES_USER: ${POSTGRES_USER:-postgres_user}
-      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_pass}
-      DAGSTER_POSTGRES_DB: ${POSTGRES_DB:-postgres_db}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
@@ -73,9 +70,6 @@ services:
     restart: on-failure
     environment:
       <<: *orchestrator-config
-      DAGSTER_POSTGRES_USER: ${POSTGRES_USER:-postgres_user}
-      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_pass}
-      DAGSTER_POSTGRES_DB: ${POSTGRES_DB:-postgres_db}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
