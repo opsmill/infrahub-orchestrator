@@ -32,6 +32,8 @@ services:
       INFRAHUB_SDK_API_TOKEN: ${INFRAHUB_TOKEN:-"06438eb2-8019-4776-878c-0941b1f1d1ec"}
     volumes:
       - ./examples-sync-config/:/tmp/sync-config/
+      #TODO: Maybe there is room for improvement here e.g. only on prod deployment ... e.g. make this a parameter ...
+      - ./workdir-sync-config/:/tmp/workdir-sync-config/
 
   dagster_webserver:
     build:
