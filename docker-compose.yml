@@ -5,7 +5,7 @@ x-orchestrator-config: &orchestrator-config
   DAGSTER_POSTGRES_DB: ${DAGSTER_POSTGRES_DB:-postgres_db}
 
 x-sot-config: &sot-config
-  INFRAHUB_TOKEN: ${INFRAHUB_TOKEN:-"06438eb2-8019-4776-878c-0941b1f1d1ec"}
+  INFRAHUB_API_TOKEN: ${INFRAHUB_API_TOKEN:-"06438eb2-8019-4776-878c-0941b1f1d1ec"}
   NETBOX_TOKEN: ${NETBOX_TOKEN:-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
   NAUTOBOT_TOKEN: ${NAUTOBOT_TOKEN:-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
 
@@ -29,7 +29,7 @@ services:
     environment:
       <<: [*orchestrator-config, *sot-config]
       DAGSTER_CURRENT_IMAGE: "orchestrator_image"
-      INFRAHUB_SDK_API_TOKEN: ${INFRAHUB_TOKEN:-"06438eb2-8019-4776-878c-0941b1f1d1ec"}
+      INFRAHUB_API_TOKEN: ${INFRAHUB_API_TOKEN:-"06438eb2-8019-4776-878c-0941b1f1d1ec"}
     volumes:
       - ./examples-sync-config/:/tmp/sync-config/
       #TODO: Maybe there is room for improvement here e.g. only on prod deployment ... e.g. make this a parameter ...
