@@ -6,7 +6,7 @@ The Infrahub Orchestrator leverages Dagster to orchestrate synchronization and d
 
 ## Project Structure
 
-```
+```text
 .
 ├── Dockerfile_dagster
 ├── Dockerfile_orchestrator
@@ -45,35 +45,35 @@ Synchronizes data between sources with an optional diff-checking feature. It can
 
 ### Sync Job Configuration
 
-```sh
+```yaml
 ops:
- sync_op:
-  config:
-   diff: True
+  sync_op:
+    config:
+      diff: True
 
 resources:
- sync_instance_resource:
-  config:
-   config_file: /tmp/from-netbox/config.yml
+  sync_instance_resource:
+    config:
+      config_file: /tmp/from-netbox/config.yml
 
- potenda_resource:
+potenda_resource:
   config:
-   branch: main
-   show_progress: True
+    branch: main
+    show_progress: True
 ```
 
 ### Diff Job Configuration
 
-```sh
+```yaml
 resources:
- sync_instance_resource:
-  config:
-   config_file: /tmp/from-nautobot-v1/config.yml
+  sync_instance_resource:
+    config:
+      config_file: /tmp/from-nautobot-v1/config.yml
 
- potenda_resource:
+potenda_resource:
   config:
-   branch: main
-   show_progress: True
+    branch: main
+    show_progress: True
 ```
 
 ## Scheduling
@@ -84,9 +84,9 @@ The `sync_job` is scheduled to run every hour, between 09:00 AM and 04:59 PM GMT
 
 To run the orchestrator, ensure Docker and Docker Compose are installed on your system. Then, execute the following commands:
 
-```sh
-docker-compose build
-docker-compose up -d
+```console
+docker compose build
+docker compose up -d
 ```
 
 This will start the Dagster instance and the orchestrator, ready to execute the defined jobs based on the provided schedules or manual triggers through the Dagster UI.
