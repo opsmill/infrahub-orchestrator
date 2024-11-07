@@ -7,15 +7,22 @@ from dagster import (
     resource,
 )
 from infrahub_sync import SyncInstance
+from infrahub_sync.potenda import Potenda
 from infrahub_sync.utils import get_instance, get_potenda_from_instance
-from potenda import Potenda
 
 
 @resource(
     config_schema={
         "name": Field(Noneable(String), is_required=False, description="Name of the sync instance"),
-        "config_file": Field(Noneable(String), is_required=False, description="Path to the sync configuration YAML file"),
-        "directory": Field(String, is_required=False, default_value="", description="Directory to search for the sync instance or to use with the config file"),
+        "config_file": Field(
+            Noneable(String), is_required=False, description="Path to the sync configuration YAML file"
+        ),
+        "directory": Field(
+            String,
+            is_required=False,
+            default_value="",
+            description="Directory to search for the sync instance or to use with the config file",
+        ),
     },
 )
 def sync_instance_resource(init_context) -> Optional[SyncInstance]:
@@ -33,6 +40,7 @@ def sync_instance_resource(init_context) -> Optional[SyncInstance]:
         raise Exception("Sync instance could not be loaded.")
 
     return sync_instance
+
 
 @resource(
     config_schema={

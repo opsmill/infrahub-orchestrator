@@ -2,7 +2,6 @@ from infrahub_sync.adapters.infrahub import InfrahubAdapter
 
 from .sync_models import (
     BuiltinTag,
-    LocationBuilding,
 )
 
 
@@ -13,4 +12,3 @@ from .sync_models import (
 # -------------------------------------------------------
 class InfrahubSync(InfrahubAdapter):
     BuiltinTag = BuiltinTag
-    LocationBuilding = LocationBuilding
