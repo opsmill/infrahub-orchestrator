@@ -63,7 +63,6 @@ def load_sync_source_op(context, id):
     yield Output(f"{context.resources.potenda_resource.source.store._store_id}", "result")
 
 
-
 @op(
     required_resource_keys={"potenda_resource"},
     ins={"id": In(str)},
@@ -109,7 +108,9 @@ def diff_op(context, load_sync_source, load_sync_destination):
     if not context.resources.potenda_resource:
         logger.error("Potenda resource is None. Unable to proceed with diff.")
         raise Failure("Potenda resource is None. Check the resource configuration.")
-    logger.info(f"Starting Diff from {context.resources.potenda_resource.source.name} to {context.resources.potenda_resource.destination.name}")
+    logger.info(
+        f"Starting Diff from {context.resources.potenda_resource.source.name} to {context.resources.potenda_resource.destination.name}"
+    )
 
     # Load Source
     logger.info(f"Loading the Source {context.resources.potenda_resource.source.name}")
@@ -119,13 +120,13 @@ def diff_op(context, load_sync_source, load_sync_destination):
     end_time = timer()
 
     yield AssetMaterialization(
-            asset_key=f"load-{context.resources.potenda_resource.source.name}",
-            metadata={
-                "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
-                "Store ID": MetadataValue.text(context.resources.potenda_resource.source.store.__str__()),
-                "Store Item Count": MetadataValue.int(context.resources.potenda_resource.source.store.count()),
-            },
-        )
+        asset_key=f"load-{context.resources.potenda_resource.source.name}",
+        metadata={
+            "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
+            "Store ID": MetadataValue.text(context.resources.potenda_resource.source.store.__str__()),
+            "Store Item Count": MetadataValue.int(context.resources.potenda_resource.source.store.count()),
+        },
+    )
     # Load Destination
     logger.info(f"Loading the Destination {context.resources.potenda_resource.destination.name}")
     start_time = timer()
@@ -134,16 +135,18 @@ def diff_op(context, load_sync_source, load_sync_destination):
     end_time = timer()
 
     yield AssetMaterialization(
-            asset_key=f"load-{context.resources.potenda_resource.destination.name}",
-            metadata={
-                "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
-                "Store ID": MetadataValue.text(context.resources.potenda_resource.destination.store.__str__()),
-                "Store Item Count": MetadataValue.int(context.resources.potenda_resource.destination.store.count()),
-            },
-        )
+        asset_key=f"load-{context.resources.potenda_resource.destination.name}",
+        metadata={
+            "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
+            "Store ID": MetadataValue.text(context.resources.potenda_resource.destination.store.__str__()),
+            "Store Item Count": MetadataValue.int(context.resources.potenda_resource.destination.store.count()),
+        },
+    )
 
     # Diff
-    potenda_name = f"{context.resources.potenda_resource.source.name}-{context.resources.potenda_resource.destination.name}"
+    potenda_name = (
+        f"{context.resources.potenda_resource.source.name}-{context.resources.potenda_resource.destination.name}"
+    )
     start_time = timer()
     mydiff = context.resources.potenda_resource.diff()
     end_time = timer()
@@ -158,8 +161,11 @@ def diff_op(context, load_sync_source, load_sync_destination):
             },
         )
     )
-    logger.info(f"Ending Diff from {context.resources.potenda_resource.source.name} to {context.resources.potenda_resource.destination.name}")
+    logger.info(
+        f"Ending Diff from {context.resources.potenda_resource.source.name} to {context.resources.potenda_resource.destination.name}"
+    )
     yield Output(f"{end_time - start_time}", "result")
+
 
 @op(
     config_schema={
@@ -191,13 +197,13 @@ def sync_op(context, load_sync_source, load_sync_destination):
     end_time = timer()
 
     yield AssetMaterialization(
-            asset_key=f"load-{context.resources.potenda_resource.source.name}",
-            metadata={
-                "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
-                "Store ID": MetadataValue.text(context.resources.potenda_resource.source.store.__str__()),
-                "Store Item Count": MetadataValue.int(context.resources.potenda_resource.source.store.count()),
-            },
-        )
+        asset_key=f"load-{context.resources.potenda_resource.source.name}",
+        metadata={
+            "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
+            "Store ID": MetadataValue.text(context.resources.potenda_resource.source.store.__str__()),
+            "Store Item Count": MetadataValue.int(context.resources.potenda_resource.source.store.count()),
+        },
+    )
     # Load Destination
     logger.info(f"Loading the Destination {context.resources.potenda_resource.destination.name}")
     start_time = timer()
@@ -206,16 +212,18 @@ def sync_op(context, load_sync_source, load_sync_destination):
     end_time = timer()
 
     yield AssetMaterialization(
-            asset_key=f"load-{context.resources.potenda_resource.destination.name}",
-            metadata={
-                "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
-                "Store ID": MetadataValue.text(context.resources.potenda_resource.destination.store.__str__()),
-                "Store Item Count": MetadataValue.int(context.resources.potenda_resource.destination.store.count()),
-            },
-        )
+        asset_key=f"load-{context.resources.potenda_resource.destination.name}",
+        metadata={
+            "Load Time (sec)": MetadataValue.float(float(f"{end_time - start_time}")),
+            "Store ID": MetadataValue.text(context.resources.potenda_resource.destination.store.__str__()),
+            "Store Item Count": MetadataValue.int(context.resources.potenda_resource.destination.store.count()),
+        },
+    )
 
     # Diff
-    potenda_name = f"{context.resources.potenda_resource.source.name}-{context.resources.potenda_resource.destination.name}"
+    potenda_name = (
+        f"{context.resources.potenda_resource.source.name}-{context.resources.potenda_resource.destination.name}"
+    )
     start_time = timer()
     mydiff = context.resources.potenda_resource.diff()
     end_time = timer()
@@ -249,8 +257,11 @@ def sync_op(context, load_sync_source, load_sync_destination):
                 "Related asset": MetadataValue.asset(AssetKey(f"diff-{potenda_name}")),
             },
         )
-        logger.info(f"Ending Sync from {context.resources.potenda_resource.source.name} to {context.resources.potenda_resource.destination.name}")
+        logger.info(
+            f"Ending Sync from {context.resources.potenda_resource.source.name} to {context.resources.potenda_resource.destination.name}"
+        )
         yield Output(f"{end_time - start_time}", "result")
+
 
 @op(
     ins={"rendered_files": In(list)},
@@ -261,7 +272,7 @@ def load_and_materialize_file_op(context, rendered_files: list):
     for file_infos in rendered_files:
         template_name, file_path = file_infos
         try:
-            with open(file_path, "r") as file:
+            with Path.open(file_path) as file:
                 file_content = file.read()
                 logger.info(f"File {template_name} at {file_path} loaded successfully.")
 
@@ -274,17 +285,17 @@ def load_and_materialize_file_op(context, rendered_files: list):
                         "File path": MetadataValue.path(file_path),
                         "File content": MetadataValue.text(file_content),
                         "Adapter": MetadataValue.text(adapter.title()),
-                    }
+                    },
                 )
-        except IOError as e:
+        except OSError as e:
             logger.error(f"Failed to load file {template_name} from {file_path}: {e}")
 
     yield Output(None, "completion_signal")
 
 
 @op(
-        required_resource_keys={"sync_instance_resource"},
-        out={"rendered_files": Out(is_required=False)},
+    required_resource_keys={"sync_instance_resource"},
+    out={"rendered_files": Out(is_required=False)},
 )
 def render_adapter_files_op(context):
     sync_instance = context.resources.sync_instance_resource

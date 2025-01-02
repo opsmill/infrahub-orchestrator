@@ -2,7 +2,6 @@ from infrahub_sync.adapters.netbox import NetboxAdapter
 
 from .sync_models import (
     BuiltinTag,
-    LocationBuilding,
 )
 
 
@@ -13,4 +12,3 @@ from .sync_models import (
 # -------------------------------------------------------
 class NetboxSync(NetboxAdapter):
     BuiltinTag = BuiltinTag
-    LocationBuilding = LocationBuilding
